@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТВОЕ ПРЕДНАЗНАЧЕНИЕ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* CRT scanlines overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.18) 2px,
+      rgba(0, 0, 0, 0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  canvas#crt-ripple {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.07;
+  }
+
+  .screen {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    animation: flicker 0.15s infinite;
+  }
+
+  .glow-text {
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #4af;
+    text-shadow:
+      0 0 4px  #4af,
+      0 0 10px #4af,
+      0 0 22px #08f,
+      0 0 50px #08f,
+      0 0 90px #06c;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  .sub-text {
+    margin-top: 1rem;
+    font-size: clamp(0.75rem, 2vw, 1rem);
+    color: #39a;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px #39a;
+    opacity: 0.75;
+  }
+
+  @keyframes flicker {
+    0%   { opacity: 1; }
+    92%  { opacity: 1; }
+    93%  { opacity: 0.88; }
+    94%  { opacity: 1; }
+    96%  { opacity: 0.92; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      text-shadow:
+        0 0 4px  #4af,
+        0 0 10px #4af,
+        0 0 22px #08f,
+        0 0 50px #08f,
+        0 0 90px #06c;
+    }
+    50% {
+      text-shadow:
+        0 0 6px  #6cf,
+        0 0 16px #4af,
+        0 0 34px #08f,
+        0 0 70px #08f,
+        0 0 120px #06c;
+    }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="crt-ripple"></canvas>
+
+<div class="screen">
+  <div class="glow-text">ТЕКУЩЕЕ ЗАДАНИЕ: НАЛЁТ НА КАПИТОЛИЙ</div>
+  <div class="sub-text">такова воля Смога &nbsp;·&nbsp; неповиновение карается смертью</div>
+</div>
+
+<script>
+  const canvas = document.getElementById('crt-ripple');
+  const ctx = canvas.getContext('2d');
+  let t = 0;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw() {
+    const { width: W, height: H } = canvas;
+    ctx.clearRect(0, 0, W, H);
+
+    const imageData = ctx.createImageData(W, H);
+    const data = imageData.data;
+
+    for (let y = 0; y < H; y++) {
+      /* horizontal ripple band that scrolls downward */
+      const wave = Math.sin((y / H) * Math.PI * 18 - t * 2.5) * 0.5 + 0.5;
+      const brightness = wave * 180;
+
+      for (let x = 0; x < W; x++) {
+        /* subtle horizontal wobble */
+        const wobble = Math.sin(y * 0.08 + t) * 1.5;
+        const sx = Math.min(W - 1, Math.max(0, Math.round(x + wobble)));
+        const i = (y * W + sx) * 4;
+
+        data[i]     = 0;
+        data[i + 1] = brightness * 0.6 | 0;
+        data[i + 2] = brightness | 0;
+        data[i + 3] = 255;
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    t += 0.018;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
+</body>
+</html>
