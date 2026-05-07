@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТЕРМИНАЛ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .terminal {
+            width: 90%;
+            max-width: 900px;
+            border: 3px solid #00ff00;
+            padding: 20px;
+            background-color: #000000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0.03) 0px,
+                rgba(0, 255, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+
+        .header {
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .menu-button {
+            background: transparent;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            position: relative;
+        }
+
+        .menu-button:hover {
+            background-color: #00ff00;
+            color: #000000;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        .menu-button::before {
+            content: '> ';
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .menu-button:hover::before {
+            opacity: 1;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-header {
+            border: 2px solid #00ff00;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .section-content {
+            border: 1px solid #00ff00;
+            padding: 15px;
+            min-height: 200px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .back-button {
+            background: transparent;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: #00ff00;
+            color: #000000;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 10px;
+            height: 16px;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            ╔═══════════════════════════════════════════════════════════════╗<br>
+            ║  ЛАРОЙ - ГЛАВНОЕ МЕНЮ                                         ║<br>
+            ╚═══════════════════════════════════════════════════════════════╝
+        </div>
+
+        <div class="content">
+            <!-- Главное меню -->
+            <div id="mainMenu" class="section active">
+                <div class="menu-title">
+                    ╔════════════════════════════════╗<br>
+                    ║   ВЫБЕРИТЕ РАЗДЕЛ ТЕРМИНАЛА    ║<br>
+                    ╚════════════════════════════════╝
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="menu-button" onclick="showSection('notes')">
+                        [1] ЗАМЕТКИ
+                    </button>
+                    <button class="menu-button" onclick="showSection('necrochat')">
+                        [2] НЕКРОЧАТ
+                    </button>
+                    <button class="menu-button" onclick="showSection('properties')">
+                        [3] СВОЙСТВА ТЕРМИНАЛА
+                    </button>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    C:\><span class="cursor-blink"></span>
+                </div>
+            </div>
+
+            <!-- Раздел: Заметки -->
+            <div id="notesSection" class="section">
+                <div class="section-header">
+                    ╔═══════════════════════════════════════╗
+                    ║  [1] ЗАМЕТКИ                         ║
+                    ╚═══════════════════════════════════════╝
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="menu-button" onclick="showSection('fingers')">
+                        [1.1] ПАЛЬЦЫ
+                    </button>
+                    <button class="menu-button" onclick="showSection('northern')">
+                        [1.2] СЕВЕРНЫЕ ОТБРОСЫ
+                    </button>
+                    <button class="menu-button" onclick="showSection('smog')">
+                        [1.3] СМОГ
+                    </button>
+                </div>
+
+                <button class="back-button" onclick="showSection('main')">
+                    ← НАЗАД В ГЛАВНОЕ МЕНЮ
+                </button>
+            </div>
+
+            <!-- Подраздел: Пальцы -->
+            <div id="fingersSection" class="section">
+                <div class="section-header">
+                    ╔═══════════════════════════════════════╗
+                    ║  [1.1] ПАЛЬЦЫ                        ║
+                    ╚═══════════════════════════════════════╝
+                </div>
+
+                <div class="section-content">
+<!-- ВСТАВЬТЕ СЮДА ТЕКСТ ДЛЯ ПАЛЬЦЕВ -->
+Особо ничего про них не знаю. Ребята особо не светят, но как я понял, это бандюганы которые воспользовались ситуацией возникшей из-за Смога.
+
+Большой - что-то типа ЧВК. Дисциплина, обмундирование - все на уровне. Поговаривают, это ребятки с Армии США, которые отказались верить в бредни государства по поводу Смога. Хуй знает в чем их цель.
+
+Указательный - проповедники. Довелось только одного видеть. До того, как мы его до ниток раздели и убили, он что-то толдычил про волю Смога. Как будто оно умеет говорить. Добавлю если еще чего разузнаю.
+
+Средний - бандюганы, которые на кровосмешении помешались как только первые криптиды появляться стали в лесах. Прошла весточка с Юга, что из-за кровосмешения они там чуть ли не мысли друг друга читать умеют. Брехня это все, просто парни помешанные на братстве, по любому.
+
+Безымянный - изверги ебаные. Любители нервишки народу простому потрепать, их хлебом не корми, но дай беднягу какого-нибудь растерзать на куски да подвесить на мерии какой-нибудь в позе Христа Спасителя. Желательно несколько. Отморозки бешеные, лучше нахуй с ними не связываться. 
+
+Мизинец - не знаю, че это за ребята, и существуют ли они вообще. Но если есть все остальные - значит, кто-то и Мизинец на себя принял. 
+<!-- КОНЕЦ ТЕКСТА ПАЛЬЦЕВ -->
+                </div>
+
+                <button class="back-button" onclick="showSection('notes')">
+                    ← НАЗАД К ЗАМЕТКАМ
+                </button>
+            </div>
+
+            <!-- Подраздел: Северные Отбросы -->
+            <div id="northernSection" class="section">
+                <div class="section-header">
+                    ╔═══════════════════════════════════════╗
+                    ║  [1.2] СЕВЕРНЫЕ ОТБРОСЫ              ║
+                    ╚═══════════════════════════════════════╝
+                </div>
+
+                <div class="section-content">
+<!-- ВСТАВЬТЕ СЮДА ТЕКСТ ДЛЯ СЕВЕРНЫХ ОТБРОСОВ -->
+Твоя банда, придурок, тебе че, совсем от грибов башку отбило? 
+
+На случай если тебя хватит деменция или амнезия, распишу тебе кто есть кто, Ларой.
+
+Ларой (то есть ты, долбаеб) - де-факто лидер, де-юре просто клей, который не дает остальным сдохнуть. 
+Бутчер - у парня вмятина в голове, такого точно не пропустишь. Туповат, но очень верный. Как-то раз тебе въебал по прессу слегка и ты потом еще час корячился на земле от боли. Может поэтому у тебя и перестала работать левая почка.
+Крысич - то ли мужик, то ли баба, хуй поймешь. Крысич потому что мелкий, проворный, носит с собой крысиные тушки засушенные как "артефакт на удачу", да и в маске крысы гоняет постоянно. Странный. 
+Горелка - молоденький, еле вдупляющий пацан лет 17 (надо будет потом спросить, сколько ему по паспорту), но с пушкой управляется умело. Пока о нем нечего написать, добавь потом что-нибудь про него ещё. Если не забудешь.
+<!-- КОНЕЦ ТЕКСТА СЕВЕРНЫХ ОТБРОСОВ -->
+                </div>
+
+                <button class="back-button" onclick="showSection('notes')">
+                    ← НАЗАД К ЗАМЕТКАМ
+                </button>
+            </div>
+
+            <!-- Подраздел: Смог -->
+            <div id="smogSection" class="section">
+                <div class="section-header">
+                    ╔═══════════════════════════════════════╗
+                    ║  [1.3] СМОГ                          ║
+                    ╚═══════════════════════════════════════╝
+                </div>
+
+                <div class="section-content">
+<!-- ВСТАВЬТЕ СЮДА ТЕКСТ ДЛЯ СМОГА -->
+И небо покрылось тучами, которые сформировали заводы рукодельные.
+И тучи эти стояли три дня и три ночи.
+Покуда небо совсем не затянулось, а Солнце лишь еле пробивалось через них.
+
+Скорее всего, из-за Смога и появились все эти бесы ебаные, повылазили из всех щелей. Не факт. Может, они вообще всегда тут были, а может это у меня уже фляга свистит.
+
+Мне однажды Крысич сказал, что видел как чел умирал. Медленно, протяжно так. И из его уст он слышал, что паренек наконец увидел Солнце.
+Хорошо если так. Подыхать так хоть со светом. 
+<!-- КОНЕЦ ТЕКСТА СМОГА -->
+                </div>
+
+                <button class="back-button" onclick="showSection('notes')">
+                    ← НАЗАД К ЗАМЕТКАМ
+                </button>
+            </div>
+
+            <!-- Раздел: Некрочат -->
+            <div id="necrochatSection" class="section">
+                <div class="section-header">
+                    ╔═══════════════════════════════════════╗
+                    ║  [2] НЕКРОЧАТ                         ║
+                    ╚═══════════════════════════════════════╝
+                </div>
+
+                <div class="section-content" id="necrochatContent">
+<!-- ВСТАВЬТЕ СЮДА ТЕКСТ ДЛЯ НЕКРОЧАТА -->
+> BunzenBurner: ребята вы это видите [2020.06.25, 14:23]
+-----------------------------------------------------------
+> DAFUCKINGBUTCHER: КТО БЫ ЭТО НИ ЧИТАЛ НИ В КОЕМ СЛУЧАЕ НЕ ПОДХОДИТЕ К ГРУЗОВИКАМ С КУЛАКОМ НА КАПОТЕ [2020.06.25, 17:03]
+> DAFUCKINGBUTCHER: Я СЕРЬЕЗНО БЛЯТЬ ОНИ ТОЛЬКО ЧТО УБИЛИ НАХУЙ КРЫСИЧА У МЕНЯ НА ГЛАЗАХ КРЫСИЧ МЕРТВ НАХУЙ [2020.06.25, 17:04]
+> DAFUCKINGBUTCHER: Я НЕ ЗНАЮ ЧЕ ПРОИСХОДИТ В ЭТИХ ГРУППАХ НО БЛЯТЬ НИ В КОЕМ СЛУЧАЕ НЕ ПОДХОДИТЕ К КУЛАКУ ПОВТОРЯЮ КУЛАК = СМЕРТЬ [2020.06.25, 17:05]
+-----------------------------------------------------------
+> TheBoyLaroy (Вы): Сегодня, 25 июня 2020 года, Северные Отбросы канули в небытие. Покойтесь с миром Крысич, Бутчер и Горелка. [2020.06.25, 20:03]
+> TheBoyLaroy (Вы): Для тех, кто будет после нас - пароль от блока информации - первые шесть цифр числа Пи. [2020.06.25, 20:04]
+> TheBoyLaroy (Вы): [ПУСТОЕ СООБЩЕНИЕ] [2020.06.25, 20:05]
+-----------------------------------------------------------
+> TheBoyLaroy (Вы): Я вижу солнце через смог. [2020.06.25, 20:15]
+> TheBoyLaroy (Вы): Это за мной. [2020.06.25, 20:15]
+-----CHAT HAS BEEN CLOSED BY ADMINISTRATOR TheBoyLaroy-----
+<!-- КОНЕЦ ТЕКСТА НЕКРОЧАТА -->
+                </div>
+
+                <button class="back-button" onclick="showSection('main')">
+                    ← НАЗАД В ГЛАВНОЕ МЕНЮ
+                </button>
+            </div>
+
+            <!-- Раздел: Свойства терминала -->
+            <div id="propertiesSection" class="section">
+                <div class="section-header">
+                    ╔═══════════════════════════════════════╗
+                    ║  [3] СВОЙСТВА ТЕРМИНАЛА              ║
+                    ╚═══════════════════════════════════════╝
+                </div>
+
+                <div class="section-content" id="propertiesContent">
+<!-- ВСТАВЬТЕ СЮДА ТЕКСТ ДЛЯ СВОЙСТВ -->
+═══════════════════════════════════════
+  СИСТЕМНАЯ ИНФОРМАЦИЯ
+═══════════════════════════════════════
+
+Версия:                    ASTRA-DOS 6.22
+Пользователь:              Ларой
+Статус биомонитора:        Мертв
+Защита терминала:          Включена, постмортем
+
+═══════════════════════════════════════
+
+Компания Astratech не несёт ответственности за интерференцию энергетики криптидов в работе терминала.
+Помните - если оно не выглядит как человек, вероятнее всего, стоит бежать.
+<!-- КОНЕЦ ТЕКСТА СВОЙСТВ -->
+                </div>
+
+                <button class="back-button" onclick="showSection('main')">
+                    ← НАЗАД В ГЛАВНОЕ МЕНЮ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section) {
+            // Скрыть все секции
+            document.querySelectorAll('.section').forEach(s => {
+                s.classList.remove('active');
+            });
+
+            // Показать нужную секцию
+            if (section === 'main') {
+                document.getElementById('mainMenu').classList.add('active');
+            } else if (section === 'notes') {
+                document.getElementById('notesSection').classList.add('active');
+            } else if (section === 'fingers') {
+                document.getElementById('fingersSection').classList.add('active');
+            } else if (section === 'northern') {
+                document.getElementById('northernSection').classList.add('active');
+            } else if (section === 'smog') {
+                document.getElementById('smogSection').classList.add('active');
+            } else if (section === 'necrochat') {
+                document.getElementById('necrochatSection').classList.add('active');
+            } else if (section === 'properties') {
+                document.getElementById('propertiesSection').classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
