@@ -1,1 +1,269 @@
-# southernjunk.github.io
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДОСТУП ЗАПРЕЩЕН</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .terminal {
+            width: 90%;
+            max-width: 800px;
+            border: 3px solid #00ff00;
+            padding: 20px;
+            background-color: #000000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            position: relative;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0.03) 0px,
+                rgba(0, 255, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+
+        .header {
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .prompt-line {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .prompt {
+            margin-right: 5px;
+        }
+
+        #passwordInput {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            flex: 1;
+            letter-spacing: 2px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .error {
+            color: #ff0000;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { content: '|'; }
+            25% { content: '/'; }
+            50% { content: '—'; }
+            75% { content: '\\'; }
+            100% { content: '|'; }
+        }
+
+        .spinner::after {
+            content: '|';
+        }
+
+        .welcome {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        #progressBar {
+            color: #00ff00;
+            font-size: 16px;
+        }
+
+        #loadingPercent {
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            ╔═══════════════════════════════════════════════════════════════╗<br>
+            ║  ASTRA-DOS Версия 6.22(C)Авторские права Astratech 1981-1994  ║<br>
+            ╚═══════════════════════════════════════════════════════════════╝
+        </div>
+
+        <div class="content">
+            <div id="loginScreen">
+                <div class="prompt-line">C:\> СИСТЕМА ЗАБЛОКИРОВАНА</div>
+                <div class="prompt-line">C:\> ТРЕБУЕТСЯ АУТЕНТИФИКАЦИЯ</div>
+                <div class="prompt-line" style="margin-top: 20px;">Введите пароль:</div>
+
+                <div class="input-container">
+                    <span class="prompt">C:\></span>
+                    <input type="password" id="passwordInput" autocomplete="off" autofocus>
+                    <span class="cursor"></span>
+                </div>
+
+                <div id="errorMessage" class="error hidden">
+                    ░ ДОСТУП ЗАПРЕЩЕН ░<br>
+                    ░ НЕВЕРНЫЙ ПАРОЛЬ ░
+                </div>
+            </div>
+
+            <div id="loadingScreen" class="loading">
+                <div class="prompt-line">
+                    <span class="spinner"></span> Проверка подлинности<span class="dots"></span>
+                </div>
+                <div class="prompt-line" style="margin-top: 10px;">
+                    <span id="progressBar"></span>
+                </div>
+                <div class="prompt-line" style="margin-top: 5px;">
+                    <span id="loadingPercent">0%</span>
+                </div>
+            </div>
+
+            <div id="welcomeScreen" class="welcome">
+                <div class="prompt-line">╔═══════════════════════════════════════╗</div>
+                <div class="prompt-line">║  ДОСТУП РАЗРЕШЕН                     ║</div>
+                <div class="prompt-line">╚═══════════════════════════════════════╝</div>
+                <div class="prompt-line" style="margin-top: 20px;">
+                    Добро пожаловать в ваш терминал, Ларой
+                </div>
+                <div class="prompt-line" style="margin-top: 10px;">
+                    C:\> Перенаправление<span class="dots"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('passwordInput');
+        const loginScreen = document.getElementById('loginScreen');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const errorMessage = document.getElementById('errorMessage');
+
+        const CORRECT_PASSWORD = 'ONCEABLESSING';
+        const REDIRECT_URL = 'https://example.com'; // ЗАМЕНИТЕ НА ВАШУ ССЫЛКУ
+
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const enteredPassword = passwordInput.value.toUpperCase();
+
+                if (enteredPassword === CORRECT_PASSWORD) {
+                    errorMessage.classList.add('hidden');
+                    loginScreen.style.display = 'none';
+                    loadingScreen.style.display = 'block';
+
+                    // Анимация загрузки
+                    let progress = 0;
+                    const progressBar = document.getElementById('progressBar');
+                    const loadingPercent = document.getElementById('loadingPercent');
+
+                    const loadingInterval = setInterval(() => {
+                        progress += 2;
+                        const barLength = Math.floor(progress / 5);
+                        progressBar.textContent = '█'.repeat(barLength) + '░'.repeat(20 - barLength);
+                        loadingPercent.textContent = progress + '%';
+
+                        if (progress >= 100) {
+                            clearInterval(loadingInterval);
+                        }
+                    }, 100);
+
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        welcomeScreen.style.display = 'block';
+
+                        setTimeout(() => {
+                            window.location.href = REDIRECT_URL;
+                        }, 2000);
+                    }, 5000);
+                } else {
+                    errorMessage.classList.remove('hidden');
+                    passwordInput.value = '';
+                }
+            }
+        });
+
+        passwordInput.focus();
+    </script>
+</body>
+</html>
