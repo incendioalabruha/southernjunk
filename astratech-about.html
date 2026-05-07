@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>О нас — Astratech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & BASE ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080c12;
+      --surface:   #0d1520;
+      --surface2:  #111d2e;
+      --border:    rgba(0,180,255,.12);
+      --accent:    #00b4ff;
+      --accent2:   #0066cc;
+      --accent3:   #ff6b35;
+      --text:      #c8d8e8;
+      --text-dim:  #5a7a99;
+      --heading:   #e8f4ff;
+      --danger:    #cc2233;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCAN-LINE OVERLAY ───────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,.08) 3px,
+        rgba(0,0,0,.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 80px 48px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 60% 50%, rgba(0,102,204,.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,180,255,.08) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(8,12,18,0) 0%, rgba(8,12,18,1) 100%);
+    }
+
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,180,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,255,.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content { position: relative; max-width: 760px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,107,53,.4);
+      border-radius: 2px;
+      margin-bottom: 32px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent3);
+    }
+
+    .hero-badge::before {
+      content: '';
+      display: block; width: 6px; height: 6px;
+      background: var(--accent3);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .4; transform: scale(.7); }
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.1;
+      color: var(--heading);
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-dim);
+      max-width: 580px;
+      margin-bottom: 48px;
+      line-height: 1.8;
+    }
+
+    .hero-stats {
+      display: flex; gap: 48px;
+      border-top: 1px solid var(--border);
+      padding-top: 40px;
+    }
+
+    .hero-stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ─── CLASSIFICATION BANNER ───────────────────────────────── */
+    .class-banner {
+      background: rgba(204,34,51,.08);
+      border-top: 1px solid rgba(204,34,51,.3);
+      border-bottom: 1px solid rgba(204,34,51,.3);
+      padding: 12px 48px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--danger);
+    }
+
+    .class-banner-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(204,34,51,.4), transparent);
+    }
+
+    /* ─── SECTION COMMON ──────────────────────────────────────── */
+    section { padding: 100px 48px; }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block; width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 700;
+      color: var(--heading);
+      line-height: 1.25;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--heading);
+      letter-spacing: .5px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── ABOUT MAIN ──────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ================================================================
+       ✏️  EDITABLE ZONE — USER TEXT
+       Весь текст между тегами <p class="user-text">...</p> можно
+       заменить на свой. Раздел чётко помечен комментариями.
+    ================================================================ */
+
+    .user-text {
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .user-text:last-child { margin-bottom: 0; }
+
+    .about-right {
+      display: flex; flex-direction: column; gap: 28px;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    }
+
+    .info-card-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .info-card-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ─── MISSION / VISION ────────────────────────────────────── */
+    .mission-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .mission-item {
+      background: var(--surface);
+      padding: 48px 40px;
+    }
+
+    .mission-icon {
+      width: 48px; height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 24px;
+      background: rgba(0,180,255,.06);
+    }
+
+    /* ─── TIMELINE ────────────────────────────────────────────── */
+    .timeline { max-width: 900px; margin: 0 auto; }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 80px 1px 1fr;
+      gap: 0 32px;
+      margin-bottom: 48px;
+    }
+
+    .timeline-year {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: right;
+      padding-top: 4px;
+    }
+
+    .timeline-line {
+      position: relative;
+      background: var(--border);
+    }
+
+    .timeline-line::before {
+      content: '';
+      position: absolute; top: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .timeline-content { padding-top: 0; }
+
+    /* ─── LEADERSHIP ──────────────────────────────────────────── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .team-card:hover {
+      border-color: rgba(0,180,255,.3);
+      transform: translateY(-4px);
+    }
+
+    .team-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--surface2), var(--accent2));
+      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      border: 2px solid var(--border);
+    }
+
+    .team-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 6px;
+    }
+
+    .team-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .team-bio {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ─── TECH PILLARS ────────────────────────────────────────── */
+    .pillars-section { background: var(--surface2); }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pillar-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 36px 28px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pillar-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .pillar-card:hover::after { opacity: 1; }
+
+    .pillar-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 44px;
+      font-weight: 900;
+      color: rgba(0,180,255,.07);
+      position: absolute; top: 16px; right: 20px;
+      line-height: 1;
+    }
+
+    /* ─── CERTIFICATIONS ──────────────────────────────────────── */
+    .certs {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      margin-top: 16px;
+    }
+
+    .cert-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: .5px;
+    }
+
+    .cert-badge span { color: var(--accent); font-size: 14px; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      section { padding: 72px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .pillars-grid { grid-template-columns: 1fr 1fr; }
+      .mission-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 60px 24px 60px; }
+      .hero-stats { flex-direction: column; gap: 24px; }
+      .team-grid { grid-template-columns: 1fr; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      h2 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  HERO                                                     -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <header class="hero" id="about">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">Класс допуска: открытый доступ</div>
+
+      <h1>Мы защищаем<br />человечество от<br /><span>неизвестного</span></h1>
+
+      <p class="hero-sub">
+        Astratech — передовая технологическая компания в области разведки и нейтрализации
+        крипто-биологических угроз. С 2009 года мы разрабатываем системы обнаружения,
+        классификации и противодействия аномальным организмам.
+      </p>
+
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value">340+</div>
+          <div class="hero-stat-label">Нейтрализованных угроз</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">18</div>
+          <div class="hero-stat-label">Стран присутствия</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">99.2%</div>
+          <div class="hero-stat-label">Точность систем</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  CLASSIFICATION BANNER                                    -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="class-banner">
+    <div class="class-banner-line"></div>
+    ⬛ Часть материалов на данной странице может быть скрыта в соответствии с регламентом ATSC-7 ⬛
+    <div class="class-banner-line"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  ABOUT MAIN SECTION                                       -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="about-grid">
+
+      <!-- ─── LEFT COLUMN — EDITABLE USER TEXT ─────────────── -->
+      <div>
+        <div class="section-label">О компании</div>
+        <h2>Кто мы такие</h2>
+
+        <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ О КОМПАНИИ          ║
+        ║  Замените содержимое тегов <p class="user-text">     ║
+        ║  на свой собственный текст.                          ║
+        ╚══════════════════════════════════════════════════════╝
+        -->
+
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ВСТУПЛЕНИЕ — замените этот текст -->
+          Astratech была основана группой военных учёных и инженеров-оборонщиков
+          в 2009 году в ответ на участившиеся случаи столкновений с аномальными
+          биологическими объектами в зонах арктических исследований.
+        </p>
+
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ИСТОРИИ — замените этот текст -->
+          На протяжении более 15 лет мы ведём систематическую работу по изучению,
+          классификации и разработке технических решений для предотвращения угроз,
+          исходящих от криптобиологических организмов — от глубоководных аномалий
+          до существ, обитающих в труднодоступных горных массивах.
+        </p>
+
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ЦЕННОСТЕЙ — замените этот текст -->
+          Наш подход основан на принципах доказательной науки, строжайшего
+          соблюдения международных протоколов безопасности и непрерывного
+          технологического развития. Мы не занимаемся уничтожением — мы занимаемся
+          защитой и систематизацией данных.
+        </p>
+
+        <p class="user-text">
+          <!-- ✏️ ДОПОЛНИТЕЛЬНЫЙ АБЗАЦ — замените или удалите -->
+          Каждое наше решение проходит независимую экспертизу Комитета по
+          крипто-биологической безопасности ООН и сертифицируется по стандарту
+          ISO/CB-9001. Мы работаем с правительствами, силовыми структурами и
+          научными организациями по всему миру.
+        </p>
+
+        <!-- ─── CERTIFICATIONS ──────────────────────────────── -->
+        <div class="certs">
+          <div class="cert-badge"><span>✓</span> ISO/CB-9001</div>
+          <div class="cert-badge"><span>✓</span> NATO CBRN Level 4</div>
+          <div class="cert-badge"><span>✓</span> ATSC Approved</div>
+          <div class="cert-badge"><span>✓</span> UN-CBS Certified</div>
+        </div>
+      </div>
+
+      <!-- ─── RIGHT COLUMN — INFO CARDS ────────────────────── -->
+      <div class="about-right">
+
+        <div class="info-card">
+          <div class="info-card-value">2009</div>
+          <div class="info-card-label">Год основания, Рейкьявик, Исландия</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-value">1 200+</div>
+          <div class="info-card-label">Сотрудников в 18 странах мира</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-value">47</div>
+          <div class="info-card-label">Активных патентов на технологии обнаружения</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-value">$3.2B</div>
+          <div class="info-card-label">Привлечённых государственных контрактов</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  MISSION / VISION / VALUES                                -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="mission-section">
+    <div style="max-width:1200px; margin:0 auto 48px;">
+      <div class="section-label">Принципы</div>
+      <h2>Миссия, видение, ценности</h2>
+    </div>
+
+    <div class="mission-grid">
+
+      <div class="mission-item">
+        <div class="mission-icon">🎯</div>
+        <h3>Миссия</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ МИССИИ              ║
+        ╚══════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАША МИССИЯ — замените этот текст -->
+          Создавать технологические решения, которые позволяют обнаруживать,
+          классифицировать и нейтрализовывать крипто-биологические угрозы до
+          того, как они причинят вред гражданскому населению.
+        </p>
+      </div>
+
+      <div class="mission-item">
+        <div class="mission-icon">🔭</div>
+        <h3>Видение</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ ВИДЕНИЯ             ║
+        ╚══════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ВИДЕНИЕ — замените этот текст -->
+          Мир, в котором ни одна встреча с аномальным организмом не станет
+          неожиданной. Полная глобальная карта криптофауны и превентивная
+          инфраструктура защиты к 2035 году.
+        </p>
+      </div>
+
+      <div class="mission-item">
+        <div class="mission-icon">⚖️</div>
+        <h3>Ценности</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ ЦЕННОСТЕЙ           ║
+        ╚══════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШИ ЦЕННОСТИ — замените этот текст -->
+          Наука над предположениями. Защита над уничтожением. Прозрачность над
+          секретностью там, где это безопасно. Мы верим в ответственное применение
+          технологий для сохранения жизни.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  TIMELINE                                                 -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section>
+    <div style="max-width:900px; margin:0 auto 56px;">
+      <div class="section-label">История</div>
+      <h2>Ключевые вехи</h2>
+      <!--
+      ╔══════════════════════════════════════════════════════════╗
+      ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ВСТУПЛЕНИЕ К ИСТОРИИ         ║
+      ╚══════════════════════════════════════════════════════════╝
+      -->
+      <p class="user-text">
+        <!-- ✏️ ВАШЕ ВВЕДЕНИЕ К ИСТОРИИ — замените этот текст -->
+        За 15 лет работы Astratech прошла путь от небольшой исследовательской группы
+        до ведущего глобального поставщика технологий крипто-биологической защиты.
+      </p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-year">2009</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <h3>Основание компании</h3>
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ГОДА — замените этот текст -->
+          <p class="user-text">Группа из 12 учёных и оборонных инженеров зарегистрировала Astratech в Рейкьявике
+          после инцидента в Норвежском море, получившего код «Glaukós-1».</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">2012</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <h3>Первый государственный контракт</h3>
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ГОДА — замените этот текст -->
+          <p class="user-text">Министерство обороны Норвегии подписало соглашение на поставку системы
+          раннего обнаружения ARGOS-1. Контракт открыл финансирование для серийных разработок.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <h3>Расширение на рынки США и Японии</h3>
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ГОДА — замените этот текст -->
+          <p class="user-text">Открытие исследовательских центров в Анкоридже (Аляска) и Саппоро. Подписание
+          меморандума с DARPA о совместной разработке нейросетевых алгоритмов детекции.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <h3>Платформа SENTINEL — мировое признание</h3>
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ГОДА — замените этот текст -->
+          <p class="user-text">Запуск облачной платформы SENTINEL для глобального мониторинга аномалий в реальном времени.
+          Система подключила 34 государственных агентства к единой сети оповещения.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">2022</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <h3>Мандат ООН</h3>
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ГОДА — замените этот текст -->
+          <p class="user-text">Комитет безопасности ООН выдал Astratech официальный мандат на разработку
+          международных протоколов реагирования на крипто-биологические инциденты класса Альфа.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-year">2024</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-content">
+          <h3>AEGIS — система нового поколения</h3>
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ГОДА — замените этот текст -->
+          <p class="user-text">Запуск программы AEGIS — автономных дронов-перехватчиков с ИИ на борту для
+          работы в условиях нулевой видимости. Первое успешное применение в Тихоокеанском регионе.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  TECHNOLOGY PILLARS                                       -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section class="pillars-section">
+    <div style="max-width:1200px; margin:0 auto 56px;">
+      <div class="section-label">Направления</div>
+      <h2>Ключевые технологии</h2>
+    </div>
+
+    <div class="pillars-grid">
+
+      <div class="pillar-card">
+        <div class="pillar-num">01</div>
+        <h3>Системы обнаружения</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ НАПРАВЛЕНИЯ 1          ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ТЕХНОЛОГИИ — замените этот текст -->
+          Многоспектральные сенсорные сети, акустические детекторы глубоководных аномалий
+          и алгоритмы компьютерного зрения на основе ИИ для обнаружения угроз в режиме реального
+          времени на расстоянии до 120 км.
+        </p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-num">02</div>
+        <h3>Классификация угроз</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ НАПРАВЛЕНИЯ 2          ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ТЕХНОЛОГИИ — замените этот текст -->
+          Нейронная база данных из более 6 000 задокументированных крипто-биологических видов.
+          Автоматическая классификация по 14 параметрам угрозы с вероятностью совпадения 99,2%.
+        </p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-num">03</div>
+        <h3>Системы противодействия</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ НАПРАВЛЕНИЯ 3          ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ТЕХНОЛОГИИ — замените этот текст -->
+          Нелетальные акустические барьеры, электромагнитные перехватчики и роевые дроны-заградители
+          для создания защитных периметров вокруг населённых пунктов и стратегических объектов.
+        </p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-num">04</div>
+        <h3>Аналитика и прогноз</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ НАПРАВЛЕНИЯ 4          ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ТЕХНОЛОГИИ — замените этот текст -->
+          Предиктивные модели миграционных маршрутов и сезонной активности аномальных организмов.
+          Точность 30-дневного прогноза составляет 87% для арктических и 79% для глубоководных видов.
+        </p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-num">05</div>
+        <h3>Полевые операции</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ НАПРАВЛЕНИЯ 5          ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ТЕХНОЛОГИИ — замените этот текст -->
+          Оснащение, обучение и поддержка специализированных команд реагирования. Бронированные
+          мобильные лаборатории, защитные экзоскелеты класса CB-III и оборудование для захвата образцов.
+        </p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-num">06</div>
+        <h3>Обучение и сертификация</h3>
+        <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ТЕКСТ НАПРАВЛЕНИЯ 6          ║
+        ╚══════════════════════════════════════════════════════════╝
+        -->
+        <p class="user-text">
+          <!-- ✏️ ВАШЕ ОПИСАНИЕ ТЕХНОЛОГИИ — замените этот текст -->
+          Программы подготовки персонала для государственных ведомств и силовых структур. Симуляторы,
+          тактические учения и сертификационные курсы по протоколам ATSC-7 и ATSC-9.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!--  LEADERSHIP                                               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <section>
+    <div style="max-width:1200px; margin:0 auto 56px;">
+      <div class="section-label">Команда</div>
+      <h2>Руководство</h2>
+      <!--
+      ╔══════════════════════════════════════════════════════════╗
+      ║  ✏️  РЕДАКТИРУЕМАЯ ЗОНА — ВСТУПЛЕНИЕ К КОМАНДЕ         ║
+      ╚══════════════════════════════════════════════════════════╝
+      -->
+      <p class="user-text">
+        <!-- ✏️ ВАШЕ ОПИСАНИЕ КОМАНДЫ — замените этот текст -->
+        За каждым нашим продуктом стоят люди с безупречным академическим и военным опытом.
+        Наша руководящая команда объединяет ведущих учёных, стратегов и инженеров.
+      </p>
+    </div>
+
+    <div class="team-grid">
+
+      <!-- ─ CARD 1 ──────────────────────────────────────────── -->
+      <div class="team-card">
+        <div class="team-avatar">EV</div>
+        <!--
+        ✏️ РЕДАКТИРУЕМАЯ ЗОНА — ДАННЫЕ УЧАСТНИКА КОМАНДЫ 1
+        Замените имя, должность и биографию на свои данные.
+        -->
+        <div class="team-name">
+          <!-- ✏️ ИМЯ -->
+          Эрик Вальдхейм
+        </div>
+        <div class="team-title">
+          <!-- ✏️ ДОЛЖНОСТЬ -->
+          Генеральный директор
+        </div>
+        <p class="team-bio">
+          <!-- ✏️ БИОГРАФИЯ -->
+          Бывший командующий арктическими операциями НАТО. Доктор биомеханики,
+          Университет Осло. Основал Astratech после инцидента «Glaukós-1».
+        </p>
+      </div>
+
+      <!-- ─ CARD 2 ──────────────────────────────────────────── -->
+      <div class="team-card">
+        <div class="team-avatar">MK</div>
+        <!--
+        ✏️ РЕДАКТИРУЕМАЯ ЗОНА — ДАННЫЕ УЧАСТНИКА КОМАНДЫ 2
+        -->
+        <div class="team-name">
+          <!-- ✏️ ИМЯ -->
+          Виктор Ковалёв
+        </div>
+        <div class="team-title">
+          <!-- ✏️ ДОЛЖНОСТЬ -->
+          Технический директор
+        </div>
+        <p class="team-bio">
+          <!-- ✏️ БИОГРАФИЯ -->
+          Ведущий специалист DARPA по автономным системам. 17 патентов в области
+          акустических сенсоров и нейросетевой классификации.
+        </p>
+      </div>
+
+      <!-- ─ CARD 3 ──────────────────────────────────────────── -->
+      <div class="team-card">
+        <div class="team-avatar">AI</div>
+        <!--
+        ✏️ РЕДАКТИРУЕМАЯ ЗОНА — ДАННЫЕ УЧАСТНИКА КОМАНДЫ 3
+        -->
+        <div class="team-name">
+          <!-- ✏️ ИМЯ -->
+          Аяша Ибрагим
+        </div>
+        <div class="team-title">
+          <!-- ✏️ ДОЛЖНОСТЬ -->
+          Директор по науке
+        </div>
+        <p class="team-bio">
+          <!-- ✏️ БИОГРАФИЯ -->
+          Профессор криптозоологии, Кейптаунский университет. Автор более
+          80 рецензируемых статей по биологии аномальных организмов.
+        </p>
+      </div>
+
+      <!-- ─ CARD 4 ──────────────────────────────────────────── -->
+      <div class="team-card">
+        <div class="team-avatar">HT</div>
+        <!--
+        ✏️ РЕДАКТИРУЕМАЯ ЗОНА — ДАННЫЕ УЧАСТНИКА КОМАНДЫ 4
+        -->
+        <div class="team-name">
+          <!-- ✏️ ИМЯ -->
+          Харуки Танака
+        </div>
+        <div class="team-title">
+          <!-- ✏️ ДОЛЖНОСТЬ -->
+          Операционный директор
+        </div>
+        <p class="team-bio">
+          <!-- ✏️ БИОГРАФИЯ -->
+          Экс-директор антикризисного отдела ООН. Координировал реагирование на
+          12 инцидентов класса Альфа в Тихоокеанском регионе.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+</html>
