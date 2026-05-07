@@ -159,6 +159,41 @@
         #loadingPercent {
             color: #00ff00;
         }
+
+        /* ---- Ethelcain effects ---- */
+
+        #matrixCanvas {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        #skullOverlay {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 201;
+            color: #3399ff;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            white-space: pre;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+            text-shadow: 0 0 8px #3399ff, 0 0 20px #0055cc, 0 0 40px #003399;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        #skullOverlay.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -213,32 +248,143 @@
         </div>
     </div>
 
+    <canvas id="matrixCanvas"></canvas>
+
+    <div id="skullOverlay">
+         ______
+        .-"      "-.
+       /            \
+      |              |
+      |,  .-.  .-.  ,|
+      | )(__/  \__)( |
+      |/     /\     \|
+      (_     ^^     _)
+       \__|IIIIII|__/
+        | \IIIIII/ |
+        \          /
+         `--------`</div>
+
     <script>
         const passwordInput = document.getElementById('passwordInput');
         const loginScreen = document.getElementById('loginScreen');
         const loadingScreen = document.getElementById('loadingScreen');
         const welcomeScreen = document.getElementById('welcomeScreen');
         const errorMessage = document.getElementById('errorMessage');
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const skullOverlay = document.getElementById('skullOverlay');
 
-        const CORRECT_PASSWORD = 'ONCEABLESSING';
-        const REDIRECT_URL = 'https://incendioalabruha.github.io/southernjunk/InnerMechanism.html'; // ЗАМЕНИТЕ НА ВАШУ ССЫЛКУ
+        const PASSWORDS = {
+            'ONCEABLESSING': { url: 'https://incendioalabruha.github.io/southernjunk/InnerMechanism.html',   name: 'Ларой' },
+            'ASTRATECH':     { url: 'https://incendioalabruha.github.io/southernjunk/astratech-about.html',  name: 'Астратех.Виктор' },
+            'ETHELCAIN':     { url: 'https://incendioalabruha.github.io/southernjunk/godforgetstoo.html',  name: 'Заблудшая Душа' },
+            '7B3F00':        { url: 'https://incendioalabruha.github.io/southernjunk/OFFTOWAR.html',  name: 'Вильгельм' },
+            'CHANGEISCOMING':{ url: 'https://incendioalabruha.github.io/southernjunk/smog.html',  name: 'Дитя' },
+        };
 
+        // ---- Matrix rain ----
+        function startMatrixRain() {
+            matrixCanvas.style.display = 'block';
+            const ctx = matrixCanvas.getContext('2d');
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!?/\\|<>';
+            const fontSize = 14;
+            const columns = Math.floor(matrixCanvas.width / fontSize);
+            const drops = Array(columns).fill(0).map(() => Math.random() * -50);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+                ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+                ctx.font = fontSize + 'px Courier New';
+
+                drops.forEach((y, i) => {
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    // Brightest char at drop head, fading trail
+                    ctx.fillStyle = '#ff4444';
+                    ctx.fillText(char, i * fontSize, y * fontSize);
+
+                    if (y * fontSize > matrixCanvas.height && Math.random() > 0.97) {
+                        drops[i] = 0;
+                    }
+                    drops[i] += 1;
+                });
+            }
+
+            return setInterval(draw, 45);
+        }
+
+        // ---- Loading bar glitch at 70% ----
+        function glitchBar() {
+            const progressBar = document.getElementById('progressBar');
+            const loadingPercent = document.getElementById('loadingPercent');
+            let tick = 0;
+            const glitch = setInterval(() => {
+                tick++;
+                const offset = Math.floor(Math.random() * 7) - 3;
+                const gp = Math.max(0, Math.min(100, 70 + offset));
+                const barLen = Math.floor(gp / 5);
+                progressBar.textContent = '█'.repeat(barLen) + '░'.repeat(20 - barLen);
+                loadingPercent.textContent = gp + '%';
+                loadingPercent.style.color = tick % 2 === 0 ? '#ff0000' : '#ff6600';
+                progressBar.style.color   = tick % 3 === 0 ? '#ff0000' : '#00ff00';
+                if (tick >= 12) clearInterval(glitch);
+            }, 180);
+        }
+
+        // ---- Full Ethelcain sequence ----
+        function triggerEthelcainEffects(match) {
+            glitchBar();
+
+            // Start matrix rain immediately
+            startMatrixRain();
+
+            // Skull fades in after 1s
+            setTimeout(() => {
+                skullOverlay.style.display = 'block';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        skullOverlay.classList.add('visible');
+                    });
+                });
+            }, 1000);
+
+            // Redirect after skull has been visible for ~3s (total ~4.5s of effects)
+            setTimeout(() => {
+                window.location.href = match.url;
+            }, 4500);
+        }
+
+        // ---- Main password handler ----
         passwordInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const enteredPassword = passwordInput.value.toUpperCase();
+                const match = PASSWORDS[enteredPassword];
 
-                if (enteredPassword === CORRECT_PASSWORD) {
+                if (match) {
                     errorMessage.classList.add('hidden');
                     loginScreen.style.display = 'none';
                     loadingScreen.style.display = 'block';
 
-                    // Анимация загрузки
+                    const isEthelcain = enteredPassword === 'ETHELCAIN';
+
                     let progress = 0;
                     const progressBar = document.getElementById('progressBar');
                     const loadingPercent = document.getElementById('loadingPercent');
 
                     const loadingInterval = setInterval(() => {
                         progress += 2;
+
+                        // For Ethelcain: freeze + trigger effects at 70%
+                        if (isEthelcain && progress >= 70) {
+                            clearInterval(loadingInterval);
+                            progressBar.textContent = '█'.repeat(14) + '░'.repeat(6);
+                            loadingPercent.textContent = '70%';
+                            setTimeout(() => triggerEthelcainEffects(match), 400);
+                            return;
+                        }
+
                         const barLength = Math.floor(progress / 5);
                         progressBar.textContent = '█'.repeat(barLength) + '░'.repeat(20 - barLength);
                         loadingPercent.textContent = progress + '%';
@@ -248,14 +394,20 @@
                         }
                     }, 100);
 
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                        welcomeScreen.style.display = 'block';
-
+                    // Normal redirect flow (skipped for Ethelcain — handled above)
+                    if (!isEthelcain) {
                         setTimeout(() => {
-                            window.location.href = REDIRECT_URL;
-                        }, 2000);
-                    }, 5000);
+                            loadingScreen.style.display = 'none';
+                            document.querySelector('#welcomeScreen .prompt-line:nth-child(4)').textContent =
+                                'Добро пожаловать в ваш терминал, ' + match.name;
+                            welcomeScreen.style.display = 'block';
+
+                            setTimeout(() => {
+                                window.location.href = match.url;
+                            }, 2000);
+                        }, 5000);
+                    }
+
                 } else {
                     errorMessage.classList.remove('hidden');
                     passwordInput.value = '';
