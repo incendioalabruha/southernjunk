@@ -8,7 +8,15 @@
   body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; }
 </style>
 </head>
-<audio src="https://dl.dropboxusercontent.com/scl/fi/8jlaw5e91nnesnqugv94t/His-Domain.mp3?rlkey=redlzl9smjzlmfii7iv4wdwkv&st=gg9jc9o6&dl=0" autoplay loop hidden></audio>
+<audio id="a" src="https://dl.dropboxusercontent.com/scl/fi/8jlaw5e91nnesnqugv94t/His-Domain.mp3?rlkey=redlzl9smjzlmfii7iv4wdwkv&st=gg9jc9o6&dl=0" autoplay loop hidden></audio>
+<script>
+  const a = document.getElementById('a');
+  a.play().catch(() => {
+    const resume = () => { a.play(); document.removeEventListener('click', resume); document.removeEventListener('touchstart', resume); };
+    document.addEventListener('click', resume);
+    document.addEventListener('touchstart', resume);
+  });
+</script>
 <body>
 <img src="https://media1.tenor.com/m/SYidlZPogZ0AAAAC/finger-wag-no-no-no.gif" alt="">
 
