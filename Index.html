@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДОСТУП ЗАПРЕЩЕН</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .terminal {
+            width: 90%;
+            max-width: 800px;
+            border: 3px solid #00ff00;
+            padding: 20px;
+            background-color: #000000;
+            position: relative;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0.03) 0px,
+                rgba(0, 255, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+
+        .header {
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .prompt-line {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .prompt {
+            margin-right: 5px;
+        }
+
+        #passwordInput {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            flex: 1;
+            letter-spacing: 2px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .error {
+            color: #ff0000;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { content: '|'; }
+            25% { content: '/'; }
+            50% { content: '—'; }
+            75% { content: '\\'; }
+            100% { content: '|'; }
+        }
+
+        .spinner::after {
+            content: '|';
+        }
+
+        .welcome {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        #progressBar {
+            color: #00ff00;
+            font-size: 16px;
+        }
+
+        #loadingPercent {
+            color: #00ff00;
+        }
+
+        /* ---- Ethelcain effects ---- */
+
+        #matrixCanvas {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        #skullOverlay {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 201;
+            color: #3399ff;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            white-space: pre;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+            text-shadow: 0 0 8px #3399ff, 0 0 20px #0055cc, 0 0 40px #003399;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        #skullOverlay.visible {
+            opacity: 1;
+        }
+
+        #infoBtn {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            z-index: 300;
+            background: none;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+            line-height: 24px;
+            text-align: center;
+            user-select: none;
+        }
+
+        #infoBtn:hover {
+            background: rgba(0,255,0,0.08);
+        }
+
+        #infoPanel {
+            display: none;
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            z-index: 300;
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            padding: 12px 14px;
+            max-width: 280px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        @keyframes glitch-open {
+            0%   { clip-path: inset(80% 0 0 0); opacity: 0.2; transform: skewX(-4deg); }
+            15%  { clip-path: inset(40% 0 30% 0); opacity: 0.6; transform: skewX(3deg); }
+            30%  { clip-path: inset(60% 0 10% 0); opacity: 0.4; transform: skewX(-2deg); }
+            50%  { clip-path: inset(20% 0 5% 0);  opacity: 0.8; transform: skewX(1deg); }
+            70%  { clip-path: inset(5% 0 0 0);    opacity: 0.9; transform: skewX(-1deg); }
+            100% { clip-path: inset(0 0 0 0);     opacity: 1;   transform: skewX(0); }
+        }
+
+        #infoPanel.open {
+            display: block;
+            animation: glitch-open 0.35s steps(1, end) forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            ╔═══════════════════════════════════════════════════════════════╗<br>
+            ║  ASTRA-DOS Версия 6.22(C)Авторские права Astratech 1981-1994  ║<br>
+            ╚═══════════════════════════════════════════════════════════════╝
+        </div>
+
+        <div class="content">
+            <div id="loginScreen">
+                <div class="prompt-line">C:\> СИСТЕМА ЗАБЛОКИРОВАНА</div>
+                <div class="prompt-line">C:\> ТРЕБУЕТСЯ АУТЕНТИФИКАЦИЯ</div>
+                <div class="prompt-line" style="margin-top: 20px;">Введите пароль:</div>
+
+                <div class="input-container">
+                    <span class="prompt">C:\></span>
+                    <input type="password" id="passwordInput" autocomplete="off" autofocus>
+                    <span class="cursor"></span>
+                </div>
+
+                <div id="errorMessage" class="error hidden">
+                    ░ ДОСТУП ЗАПРЕЩЕН ░<br>
+                    ░ НЕВЕРНЫЙ ПАРОЛЬ ░
+                </div>
+            </div>
+
+            <div id="loadingScreen" class="loading">
+                <div class="prompt-line">
+                    <span class="spinner"></span> Проверка подлинности<span class="dots"></span>
+                </div>
+                <div class="prompt-line" style="margin-top: 10px;">
+                    <span id="progressBar"></span>
+                </div>
+                <div class="prompt-line" style="margin-top: 5px;">
+                    <span id="loadingPercent">0%</span>
+                </div>
+            </div>
+
+            <div id="welcomeScreen" class="welcome">
+                <div class="prompt-line">╔═══════════════════════════════════════╗</div>
+                <div class="prompt-line">║  ДОСТУП РАЗРЕШЕН                     ║</div>
+                <div class="prompt-line">╚═══════════════════════════════════════╝</div>
+                <div class="prompt-line" style="margin-top: 20px;">
+                    Добро пожаловать в ваш терминал, Ларой
+                </div>
+                <div class="prompt-line" style="margin-top: 10px;">
+                    C:\> Перенаправление<span class="dots"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="infoBtn" onclick="toggleInfo()">i</button>
+    <div id="infoPanel">ASTRA-DOS v6.22
+Astratech Corp., 1981-1994
+
+Нам поступили жалобы о нестабильной
+работе системы входа. Мы осведомлены
+об этой проблеме и просим пользователей
+не пытаться получить несанкционированный
+доступ к чужим данным. Некоторые данные
+существуют <a href="https://incendioalabruha.github.io/southernjunk/NOTTOSEE.html" style="color:inherit;text-decoration:none;cursor:pointer;">не для ваших глаз</a>.</div>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <div id="skullOverlay">
+         ______
+        .-"      "-.
+       /            \
+      |              |
+      |,  .-.  .-.  ,|
+      | )(__/  \__)( |
+      |/     /\     \|
+      (_     ^^     _)
+       \__|IIIIII|__/
+        | \IIIIII/ |
+        \          /
+         `--------`</div>
+
+    <script>
+        const passwordInput = document.getElementById('passwordInput');
+        const loginScreen = document.getElementById('loginScreen');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const errorMessage = document.getElementById('errorMessage');
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const skullOverlay = document.getElementById('skullOverlay');
+
+        const PASSWORDS = {
+            'ONCEABLESSING': { url: 'https://incendioalabruha.github.io/southernjunk/InnerMechanism.html',   name: 'Ларой' },
+            'ASTRATECH':     { url: 'https://incendioalabruha.github.io/southernjunk/astratech-about.html',  name: 'Астратех.Виктор' },
+            'ETHELCAIN':     { url: 'https://incendioalabruha.github.io/southernjunk/godforgetstoo.html',  name: 'Заблудшая Душа' },
+            '7B3F00':        { url: 'https://incendioalabruha.github.io/southernjunk/OFFTOWAR.html',  name: 'Вильгельм' },
+            'CHANGEISCOMING':{ url: 'https://incendioalabruha.github.io/southernjunk/smog.html',  name: 'Дитя' },
+            'HEARNOEVIL':{ url: 'example.com',  name: 'Умник' },
+        };
+
+        // ---- Matrix rain ----
+        function startMatrixRain() {
+            matrixCanvas.style.display = 'block';
+            const ctx = matrixCanvas.getContext('2d');
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!?/\\|<>';
+            const fontSize = 14;
+            const columns = Math.floor(matrixCanvas.width / fontSize);
+            const drops = Array(columns).fill(0).map(() => Math.random() * -50);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+                ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+                ctx.font = fontSize + 'px Courier New';
+
+                drops.forEach((y, i) => {
+                    const char = chars[Math.floor(Math.random() * chars.length)];
+                    // Brightest char at drop head, fading trail
+                    ctx.fillStyle = '#ff4444';
+                    ctx.fillText(char, i * fontSize, y * fontSize);
+
+                    if (y * fontSize > matrixCanvas.height && Math.random() > 0.97) {
+                        drops[i] = 0;
+                    }
+                    drops[i] += 1;
+                });
+            }
+
+            return setInterval(draw, 45);
+        }
+
+        // ---- Loading bar glitch at 70% ----
+        function glitchBar() {
+            const progressBar = document.getElementById('progressBar');
+            const loadingPercent = document.getElementById('loadingPercent');
+            let tick = 0;
+            const glitch = setInterval(() => {
+                tick++;
+                const offset = Math.floor(Math.random() * 7) - 3;
+                const gp = Math.max(0, Math.min(100, 70 + offset));
+                const barLen = Math.floor(gp / 5);
+                progressBar.textContent = '█'.repeat(barLen) + '░'.repeat(20 - barLen);
+                loadingPercent.textContent = gp + '%';
+                loadingPercent.style.color = tick % 2 === 0 ? '#ff0000' : '#ff6600';
+                progressBar.style.color   = tick % 3 === 0 ? '#ff0000' : '#00ff00';
+                if (tick >= 12) clearInterval(glitch);
+            }, 180);
+        }
+
+        // ---- Umnik sequence ----
+        function triggerUmnikEffects(match) {
+            const progressBar = document.getElementById('progressBar');
+            const loadingPercent = document.getElementById('loadingPercent');
+            const spinnerLine = document.querySelector('#loadingScreen .prompt-line:first-child');
+
+            // Freeze at 50% for 4 seconds, then collapse into message
+            progressBar.textContent = '█'.repeat(10) + '░'.repeat(10);
+            loadingPercent.textContent = '50%';
+
+            const glitchChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*!?';
+            const target = 'А ты, должно быть, умник?';
+
+            setTimeout(() => {
+                // Phase 1: collapse spinner line into noise
+                let noiseStep = 0;
+                const noiseInterval = setInterval(() => {
+                    noiseStep++;
+                    const len = Math.max(2, 24 - noiseStep * 2);
+                    let noise = '';
+                    for (let i = 0; i < len; i++) {
+                        noise += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                    }
+                    spinnerLine.textContent = noise;
+                    progressBar.textContent = Array.from(progressBar.textContent).map(c =>
+                        Math.random() > 0.6 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : c
+                    ).join('');
+                    loadingPercent.style.color = noiseStep % 2 === 0 ? '#ff0000' : '#00ff00';
+
+                    if (noiseStep >= 10) {
+                        clearInterval(noiseInterval);
+                        progressBar.textContent = '';
+                        loadingPercent.textContent = '';
+
+                        // Phase 2: reveal target string character by character from noise
+                        let revealed = Array(target.length).fill(null).map(() =>
+                            glitchChars[Math.floor(Math.random() * glitchChars.length)]
+                        );
+                        let revealIndex = 0;
+                        spinnerLine.style.color = '#00ff00';
+                        loadingPercent.style.color = '#00ff00';
+
+                        const revealInterval = setInterval(() => {
+                            // Randomize unrevealed chars
+                            for (let i = revealIndex; i < revealed.length; i++) {
+                                revealed[i] = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                            }
+                            // Lock in next char
+                            if (revealIndex < target.length) {
+                                revealed[revealIndex] = target[revealIndex];
+                                revealIndex++;
+                            }
+                            spinnerLine.textContent = revealed.join('');
+
+                            if (revealIndex >= target.length) {
+                                clearInterval(revealInterval);
+                                spinnerLine.textContent = target;
+
+                                // Redirect after message is fully revealed
+                                setTimeout(() => {
+                                    window.location.href = match.url;
+                                }, 2000);
+                            }
+                        }, 80);
+                    }
+                }, 120);
+            }, 4000);
+        }
+
+        // ---- Full Ethelcain sequence ----
+        function triggerEthelcainEffects(match) {
+            glitchBar();
+
+            // Start matrix rain immediately
+            startMatrixRain();
+
+            // Skull fades in after 1s
+            setTimeout(() => {
+                skullOverlay.style.display = 'block';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        skullOverlay.classList.add('visible');
+                    });
+                });
+            }, 1000);
+
+            // Redirect after skull has been visible for ~3s (total ~4.5s of effects)
+            setTimeout(() => {
+                window.location.href = match.url;
+            }, 4500);
+        }
+
+        // ---- Main password handler ----
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const enteredPassword = passwordInput.value.toUpperCase();
+                const match = PASSWORDS[enteredPassword];
+
+                if (match) {
+                    errorMessage.classList.add('hidden');
+                    loginScreen.style.display = 'none';
+                    loadingScreen.style.display = 'block';
+
+                    const isEthelcain = enteredPassword === 'ETHELCAIN';
+                    const isUmnik = enteredPassword === 'HEARNOEVIL';
+
+                    let progress = 0;
+                    const progressBar = document.getElementById('progressBar');
+                    const loadingPercent = document.getElementById('loadingPercent');
+
+                    const loadingInterval = setInterval(() => {
+                        progress += 2;
+
+                        // For Ethelcain: freeze + trigger effects at 70%
+                        if (isEthelcain && progress >= 70) {
+                            clearInterval(loadingInterval);
+                            progressBar.textContent = '█'.repeat(14) + '░'.repeat(6);
+                            loadingPercent.textContent = '70%';
+                            setTimeout(() => triggerEthelcainEffects(match), 400);
+                            return;
+                        }
+
+                        // For Umnik: freeze at 50%
+                        if (isUmnik && progress >= 50) {
+                            clearInterval(loadingInterval);
+                            triggerUmnikEffects(match);
+                            return;
+                        }
+
+                        const barLength = Math.floor(progress / 5);
+                        progressBar.textContent = '█'.repeat(barLength) + '░'.repeat(20 - barLength);
+                        loadingPercent.textContent = progress + '%';
+
+                        if (progress >= 100) {
+                            clearInterval(loadingInterval);
+                        }
+                    }, 100);
+
+                    // Normal redirect flow (skipped for Ethelcain and Umnik — handled above)
+                    if (!isEthelcain && !isUmnik) {
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            document.querySelector('#welcomeScreen .prompt-line:nth-child(4)').textContent =
+                                'Добро пожаловать в ваш терминал, ' + match.name;
+                            welcomeScreen.style.display = 'block';
+
+                            setTimeout(() => {
+                                window.location.href = match.url;
+                            }, 2000);
+                        }, 5000);
+                    }
+
+                } else {
+                    errorMessage.classList.remove('hidden');
+                    passwordInput.value = '';
+                }
+            }
+        });
+
+        passwordInput.focus();
+
+        function toggleInfo() {
+            const panel = document.getElementById('infoPanel');
+            if (panel.classList.contains('open')) {
+                panel.classList.remove('open');
+                panel.style.display = 'none';
+            } else {
+                panel.style.display = 'block';
+                panel.classList.remove('open');
+                void panel.offsetWidth;
+                panel.classList.add('open');
+            }
+        }
+    </script>
+</body>
+</html>
